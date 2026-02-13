@@ -1,0 +1,131 @@
+<!-- Floating hearts background -->
+<div class="floating-hearts" aria-hidden="true">
+  @for (heart of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]; track heart) {
+    <span class="heart" [style.--i]="heart">&#10084;</span>
+  }
+</div>
+
+<!-- CELEBRATION SCREEN -->
+@if (answered()) {
+  <div class="celebration">
+    <div class="confetti-container" aria-hidden="true">
+      @for (c of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]; track c) {
+        <div class="confetti" [style.--j]="c"></div>
+      }
+    </div>
+    <div class="celebration-content">
+      <div class="big-heart-pulse">&#10084;&#65039;</div>
+      <h1 class="celebration-title">She Said YES!</h1>
+      <p class="celebration-text">
+        I knew you'd say yes! (You didn't really have a choice though, did you?)
+      </p>
+      <p class="celebration-text small">
+        I love you more than words can express. You are my best friend, my partner in crime,
+        my renovation buddy, and soon... my wife. Here's to forever with you.
+      </p>
+      <p class="celebration-text tiny">
+        P.S. - You still can't have all the blankets.
+      </p>
+      <div class="heart-rain" aria-hidden="true">
+        @for (h of [1,2,3,4,5,6,7,8]; track h) {
+          <span class="rain-heart" [style.--k]="h">&#10084;&#65039;</span>
+        }
+      </div>
+    </div>
+  </div>
+} @else {
+  <!-- MAIN CONTENT -->
+  <div class="container">
+    <!-- HERO SECTION -->
+    @if (currentSection() === 0) {
+      <section class="hero">
+        <div class="hero-content">
+          <p class="hero-date">February 14, 2026</p>
+          <h1 class="hero-title">
+            A Love Letter<br />
+            <span class="script">For You My Kouti</span>
+          </h1>
+          <p class="hero-subtitle">
+            Before I ask you a very important question... let me remind you of our story.
+          </p>
+          <button class="btn-primary" (click)="nextSection()">
+            Begin Our Story &#10084;
+          </button>
+        </div>
+      </section>
+    }
+
+    <!-- STORY CARDS -->
+    @for (card of storyCards; track card.title; let i = $index) {
+      @if (currentSection() === i + 1) {
+        <section class="story-section">
+          <div class="story-card">
+            <span class="card-emoji">{{ card.emoji }}</span>
+            <h2 class="card-title">{{ card.title }}</h2>
+            <p class="card-text">{{ card.text }}</p>
+            <div class="card-nav">
+              <button class="btn-secondary" (click)="prevSection()">
+                &#8592; Back
+              </button>
+              @if (i < storyCards.length - 1) {
+                <button class="btn-primary" (click)="nextSection()">
+                  Next &#8594;
+                </button>
+              } @else {
+                <button class="btn-primary pulse" (click)="nextSection()">
+                  The Big Question &#10084;
+                </button>
+              }
+            </div>
+            <div class="card-progress">
+              @for (dot of storyCards; track dot.title; let d = $index) {
+                <span
+                  class="dot"
+                  [class.active]="d === i"
+                ></span>
+              }
+            </div>
+          </div>
+        </section>
+      }
+    }
+
+    <!-- THE BIG QUESTION -->
+    @if (currentSection() === storyCards.length + 1) {
+      <section class="question-section">
+        <div class="question-content">
+          <div class="question-hearts" aria-hidden="true">&#10084;&#65039; &#10084;&#65039; &#10084;&#65039;</div>
+          <h1 class="question-title script">Will You Be My Valentine?</h1>
+          <p class="question-subtitle">
+            (Choose wisely... or at least try to)
+          </p>
+          <div class="buttons-area">
+            <button
+              class="btn-yes"
+              (click)="sayYes()"
+            >
+              Yes! &#10084;&#65039;
+            </button>
+            <button
+              class="btn-no"
+              [class.moved]="noButtonMoved()"
+              [style.top]="noButtonMoved() ? noButtonStyle().top : null"
+              [style.left]="noButtonMoved() ? noButtonStyle().left : null"
+              (pointerdown)="moveNoButton($event)"
+            >
+              {{ noButtonText() }}
+            </button>
+          </div>
+          @if (noAttempts() >= 3) {
+            <p class="hint-text">
+              Hmm... having trouble clicking "No"? Maybe the universe is trying to tell you something...
+            </p>
+          }
+        </div>
+        <button class="btn-back-story" (click)="prevSection()">
+          &#8592; Re-read our story
+        </button>
+      </section>
+    }
+  </div>
+}
